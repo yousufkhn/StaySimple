@@ -1,0 +1,6 @@
+@StaySimple.AuthService_HostAddress = http://localhost:5171
+
+GET {{StaySimple.AuthService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

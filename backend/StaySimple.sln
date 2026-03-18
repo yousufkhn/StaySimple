@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaySimple.API", "StaySimple.API\StaySimple.API.csproj", "{4394C9CE-33B2-4CF7-A52E-08A21549FF0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaySimple.AuthService", "StaySimple.AuthService\StaySimple.AuthService.csproj", "{ADEF417C-B94A-47F3-A7E6-32BF642D23BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4394C9CE-33B2-4CF7-A52E-08A21549FF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4394C9CE-33B2-4CF7-A52E-08A21549FF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4394C9CE-33B2-4CF7-A52E-08A21549FF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4394C9CE-33B2-4CF7-A52E-08A21549FF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADEF417C-B94A-47F3-A7E6-32BF642D23BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADEF417C-B94A-47F3-A7E6-32BF642D23BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADEF417C-B94A-47F3-A7E6-32BF642D23BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADEF417C-B94A-47F3-A7E6-32BF642D23BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39F16877-672A-4F95-B2D5-15D6B34E6808}
+	EndGlobalSection
+EndGlobal

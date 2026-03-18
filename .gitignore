@@ -1,0 +1,72 @@
+# -----------------------------
+# .NET / C#
+# -----------------------------
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+Debug/
+Release/
+
+# Rider / VS / VS Code
+.vs/
+.idea/
+.vscode/
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+logs/
+
+# -----------------------------
+# OS files (because Windows exists)
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Environment files (DO NOT PUSH SECRETS)
+# -----------------------------
+.env
+.env.*
+appsettings.Development.json
+
+# Optional: if storing secrets locally
+appsettings.Local.json
+
+# -----------------------------
+# NuGet
+# -----------------------------
+*.nupkg
+packages/
+
+# -----------------------------
+# Database
+# -----------------------------
+*.mdf
+*.ldf
+
+# -----------------------------
+# Node (for your future frontend)
+# -----------------------------
+node_modules/
+dist/
+build/
+
+# -----------------------------
+# Coverage / Test output
+# -----------------------------
+coverage/
+TestResults/
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.swp
+*.tmp
+*.cache
