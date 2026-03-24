@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using StaySimple.AuthService.Data;
-using StaySimple.AuthService.Services;
+using Microsoft.OpenApi.Models;
+using StaySimple.BookingService.Data;
+using StaySimple.BookingService.Services.Implementations;
+using StaySimple.BookingService.Services.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//this is for database connection string
-builder.Services.AddDbContext<AuthDbContext>(o =>
+builder.Services.AddDbContext<BookingDbContext>(o =>
 {
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o => o.TokenValidationParameters = new TokenValidationParameters
@@ -29,19 +29,51 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+// for http calls
+builder.Services.AddHttpClient();
+
+
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT like: Bearer {your token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -52,15 +84,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// what this does it automatically applies the latest migration and update database accordinglys
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
     db.Database.Migrate();
 }
 

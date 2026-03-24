@@ -1,0 +1,6 @@
+@StaySimple.BookingService_HostAddress = http://localhost:5035
+
+GET {{StaySimple.BookingService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
