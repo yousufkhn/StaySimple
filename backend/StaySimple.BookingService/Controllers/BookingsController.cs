@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaySimple.BookingService.DTOs;
+using StaySimple.BookingService.Services;
 using StaySimple.BookingService.Services.Interfaces;
 using System.Security.Claims;
 
@@ -19,7 +20,6 @@ namespace StaySimple.BookingService.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetAll()
         => Ok(await _bookingService.GetAllAsync());
 
@@ -33,12 +33,19 @@ namespace StaySimple.BookingService.Controllers
         [HttpPost]
         public async Task<ActionResult<BookingDto>> Create(CreateBookingDto dto)
         {
-            var result = await _bookingService.CreateAsync(dto, User);
+            try
+            {
+                var result = await _bookingService.CreateAsync(dto, User);
 
-            if (result == null)
-                return BadRequest(new { message = "Invalid booking request." });
+                if (result == null)
+                    return BadRequest(new { message = "Invalid booking request." });
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (BookingValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("cancel/{id}")]

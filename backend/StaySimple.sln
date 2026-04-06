@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaySimple.HotelService", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaySimple.BookingService", "StaySimple.BookingService\StaySimple.BookingService.csproj", "{4EB9A5DE-756B-446D-B4F6-5E25845ADED6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{D4FD25F2-9AEA-4102-A32C-997098C45F56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaySimple.Notifications", "StaySimple.Notifications\StaySimple.Notifications.csproj", "{875CC7EC-7693-4688-AFF2-63BCE16224A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{4EB9A5DE-756B-446D-B4F6-5E25845ADED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EB9A5DE-756B-446D-B4F6-5E25845ADED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EB9A5DE-756B-446D-B4F6-5E25845ADED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4FD25F2-9AEA-4102-A32C-997098C45F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4FD25F2-9AEA-4102-A32C-997098C45F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4FD25F2-9AEA-4102-A32C-997098C45F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4FD25F2-9AEA-4102-A32C-997098C45F56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{875CC7EC-7693-4688-AFF2-63BCE16224A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{875CC7EC-7693-4688-AFF2-63BCE16224A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{875CC7EC-7693-4688-AFF2-63BCE16224A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{875CC7EC-7693-4688-AFF2-63BCE16224A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

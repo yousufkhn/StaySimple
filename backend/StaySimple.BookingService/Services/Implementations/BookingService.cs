@@ -1,23 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaySimple.BookingService.Data;
 using StaySimple.BookingService.DTOs;
+using StaySimple.BookingService.Services;
 using StaySimple.BookingService.Services.Interfaces;
+using Shared.Contracts;
+using MassTransit;
 using System.Security.Claims;
 
 namespace StaySimple.BookingService.Services.Implementations
 {
     public class BookingService : IBookingService
     {
+        private const int MaxNightsPerBooking = 30;
+        private const int RollingWindowDays = 90;
+        private const int MaxNightsPerRollingWindow = 60;
+
         private readonly BookingDbContext _db;
         private readonly IHttpClientFactory _http;
         private readonly IConfiguration _config;
+        private readonly IPublishEndpoint _bus;
         
 
-        public BookingService(BookingDbContext db,IHttpClientFactory http,IConfiguration config)
+        public BookingService(BookingDbContext db,IHttpClientFactory http,IConfiguration config, IPublishEndpoint bus)
         {
             _db = db;
             _http = http;
             _config = config;
+            _bus = bus;
         }
 
         public async Task<IEnumerable<BookingDto>> GetAllAsync()
@@ -46,17 +55,44 @@ namespace StaySimple.BookingService.Services.Implementations
             var userEmail = user.FindFirstValue(ClaimTypes.Email) ?? "";
 
             if (dto.CheckOutDate <= dto.CheckInDate)
-                return null;
+                throw new BookingValidationException("Check-out date must be after check-in date.");
+
+            var checkInDate = dto.CheckInDate.Date;
+            var checkOutDate = dto.CheckOutDate.Date;
+            var requestedNights = (checkOutDate - checkInDate).Days;
+
+            if (requestedNights <= 0)
+                throw new BookingValidationException("Stay must be at least 1 night.");
+
+            if (requestedNights > MaxNightsPerBooking)
+                throw new BookingValidationException($"Maximum stay allowed per booking is {MaxNightsPerBooking} nights.");
+
+            var windowStart = checkInDate.AddDays(-(RollingWindowDays - 1));
+            var windowEnd = checkInDate;
+
+            var existingWindowBookings = await _db.Bookings
+                .Where(b => b.UserId == userId)
+                .Where(b => b.Status != "Cancelled")
+                .Where(b => b.CheckInDate.Date >= windowStart && b.CheckInDate.Date <= windowEnd)
+                .ToListAsync();
+
+            var existingNightsInWindow = existingWindowBookings
+                .Sum(b => Math.Max(0, (b.CheckOutDate.Date - b.CheckInDate.Date).Days));
+
+            if (existingNightsInWindow + requestedNights > MaxNightsPerRollingWindow)
+                throw new BookingValidationException(
+                    $"Booking limit exceeded. You can book a maximum of {MaxNightsPerRollingWindow} nights within any rolling {RollingWindowDays}-day window.");
 
             // this checks in the local db for room availability
             var isAvailableLocal = await IsRoomAvailableLocally(dto.RoomId, dto.CheckInDate, dto.CheckOutDate);
-            if (!isAvailableLocal) return null;
+            if (!isAvailableLocal)
+                throw new BookingValidationException("Selected room is not available for the chosen dates.");
 
             var isAvailableExternal = await IsRoomAvailableFromHotel(dto.RoomId, dto.CheckInDate, dto.CheckOutDate);
-            if (!isAvailableExternal) return null;
+            if (!isAvailableExternal)
+                throw new BookingValidationException("Room availability check failed. Please try different dates.");
 
-            var nights = (dto.CheckOutDate - dto.CheckInDate).Days;
-            var total = nights * dto.PricePerNight;
+            var total = requestedNights * dto.PricePerNight;
             var bookingRef = $"STY-{DateTime.UtcNow.Year}-{Random.Shared.Next(100000, 999999)}";
 
             var booking = new Models.Booking
@@ -67,8 +103,8 @@ namespace StaySimple.BookingService.Services.Implementations
                 RoomId = dto.RoomId,
                 RoomType = dto.RoomType,
                 HotelName = dto.HotelName,
-                CheckInDate = dto.CheckInDate,
-                CheckOutDate = dto.CheckOutDate,
+                CheckInDate = checkInDate,
+                CheckOutDate = checkOutDate,
                 TotalPrice = total,
                 Status = "Confirmed",
                 BookingRef = bookingRef,
@@ -77,6 +113,21 @@ namespace StaySimple.BookingService.Services.Implementations
 
             _db.Bookings.Add(booking);
             await _db.SaveChangesAsync();
+
+            // ── RabbitMQ: Notification.API subscribes → logs booking confirmation ──
+        await _bus.Publish(new BookingConfirmedEvent
+        {
+            BookingId = booking.Id,
+            UserId = userId,
+            UserName = userName,
+            UserEmail = userEmail,
+            HotelName = dto.HotelName,
+            RoomType = dto.RoomType,
+            CheckInDate = dto.CheckInDate,
+            CheckOutDate = dto.CheckOutDate,
+            TotalPrice = total,
+            BookingRef = bookingRef
+        });
 
             return Map(booking);
         }
@@ -90,6 +141,16 @@ namespace StaySimple.BookingService.Services.Implementations
 
             booking.Status = "Cancelled";
             await _db.SaveChangesAsync();
+
+            // ── RabbitMQ: Notification.API subscribes → logs cancellation ──
+        await _bus.Publish(new BookingCancelledEvent
+        {
+            BookingId = booking.Id,
+            UserEmail = booking.UserEmail,
+            UserName = booking.UserName,
+            HotelName = booking.HotelName,
+            BookingRef = booking.BookingRef
+        });
 
             return true;
         }

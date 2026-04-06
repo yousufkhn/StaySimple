@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+	--bg: #0f1419;
+	--surface: #1a1f2e;
+	--surface-soft: #242b3e;
+	--surface-bright: #2d3447;
+	--text: #f5f7fa;
+	--text-muted: #b8c1cc;
+	--primary: #4a70ff;
+	--primary-light: #6b8fff;
+	--primary-dark: #3d5ad4;
+	--accent: #7c5cde;
+	--accent-light: #9478e8;
+	--luxury-gold: #d4af37;
+	--border: #3d4654;
+	--border-light: #4d5a6f;
+	--shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.4);
+	--shadow-md: 0 12px 30px rgba(0, 0, 0, 0.3);
+	--shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	font-family: 'Manrope', 'Segoe UI', sans-serif;
+	color: var(--text);
+	background:
+		radial-gradient(1200px 600px at 20% 10%, rgba(74, 112, 255, 0.12), transparent 50%),
+		radial-gradient(1400px 700px at 80% 90%, rgba(124, 92, 222, 0.1), transparent 50%),
+		linear-gradient(135deg, #0a0e15 0%, #0f1419 50%, #121621 100%);
+}
+
+h1,
+h2,
+h3 {
+	font-family: 'DM Serif Display', Georgia, serif;
+	letter-spacing: 0.01em;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+	font-family: inherit;
+}
+
+button,
+.btn {
+	transition: all 0.2s ease;
+}
+
+button:hover,
+.btn:hover {
+	transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	button,
+	.btn {
+		transition: none;
+	}
+
+	button:hover,
+	.btn:hover {
+		transform: none;
+	}
+}

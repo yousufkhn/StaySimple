@@ -1,0 +1,140 @@
+<main class="home-page">
+	<!-- Customer Hero Section -->
+	<section class="hero" *ngIf="!auth.isAdmin()">
+		<div class="hero-copy">
+			<p class="eyebrow">Hotel Booking Platform</p>
+			<h1>Find your next stay with confidence.</h1>
+			<p class="subtitle">
+				From city break hotels to vacation resorts, compare rooms and reserve in a few quick steps.
+			</p>
+
+			<div class="hero-stats">
+				<div class="hero-stat">
+					<strong>8K+</strong>
+					<span>Rooms Listed</span>
+				</div>
+				<div class="hero-stat">
+					<strong>4.8</strong>
+					<span>Average Rating</span>
+				</div>
+				<div class="hero-stat">
+					<strong>24x7</strong>
+					<span>Travel Support</span>
+				</div>
+			</div>
+
+			<div class="cta-row" *ngIf="!auth.isLoggedIn()">
+				<a class="btn solid" routerLink="/login">Start Booking</a>
+				<a class="btn outline" routerLink="/register">Create Account</a>
+			</div>
+
+			<div class="cta-row" *ngIf="auth.isLoggedIn()">
+				<a class="btn solid" routerLink="/hotels">Explore Hotels</a>
+				<a class="btn outline" routerLink="/my-bookings">View Itineraries</a>
+			</div>
+		</div>
+
+		<div class="hero-visual" aria-hidden="true">
+			<div class="visual-card large">
+				<p>Beach Resort</p>
+			</div>
+			<div class="visual-card small one">
+				<p>City Hotel</p>
+			</div>
+			<div class="visual-card small two">
+				<p>Mountain Stay</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Admin Hero Section -->
+	<section class="admin-hero" *ngIf="auth.isAdmin()">
+		<div class="admin-copy">
+			<p class="eyebrow">Admin Control Panel</p>
+			<h1>Manage your hotel properties & rooms</h1>
+			<p class="subtitle">
+				Add new properties, manage room inventory, track bookings, and maximize your occupancy rates.
+			</p>
+
+			<div class="admin-stats">
+				<div class="admin-stat">
+					<strong>Overview</strong>
+					<span>Monitor all operations</span>
+				</div>
+			</div>
+
+			<div class="cta-row">
+				<a class="btn solid" routerLink="/admin/manage-hotels">Manage Hotels</a>
+				<a class="btn outline" routerLink="/admin/manage-rooms">Manage Rooms</a>
+			</div>
+		</div>
+
+		<div class="admin-visual" aria-hidden="true">
+			<div class="admin-card">
+				<p>Property Management</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="search-band" *ngIf="!auth.isAdmin()">
+		<div class="search-head">
+			<p class="eyebrow">Book By Destination</p>
+			<h2>Where are you headed?</h2>
+		</div>
+		<form (ngSubmit)="onSearch()" class="search-form">
+			<input
+				type="text"
+				name="city"
+				[(ngModel)]="city"
+				placeholder="Enter city like Goa, Jaipur, Mumbai..."
+			/>
+			<button type="submit">Search Available Hotels</button>
+		</form>
+		<div class="city-list">
+			<button type="button" class="city-chip" (click)="city='Goa'; onSearch()">Goa</button>
+			<button type="button" class="city-chip" (click)="city='Jaipur'; onSearch()">Jaipur</button>
+			<button type="button" class="city-chip" (click)="city='Mumbai'; onSearch()">Mumbai</button>
+			<button type="button" class="city-chip" (click)="city='Delhi'; onSearch()">Delhi</button>
+			<button type="button" class="city-chip" (click)="city='Udaipur'; onSearch()">Udaipur</button>
+		</div>
+	</section>
+
+	<section class="curated-stays" *ngIf="!auth.isAdmin()">
+		<div class="section-head">
+			<p class="eyebrow">Curated Collection</p>
+			<h2>Top stay styles for your next trip</h2>
+		</div>
+		<div class="stay-grid">
+			<article class="stay-card" (click)="city='Pondicherry'; onSearch()">
+				<p class="stay-tag">Coastal</p>
+				<h3>Sea View Retreats</h3>
+				<p>Wake up to beach sunrise and easy waterfront access.</p>
+			</article>
+			<article class="stay-card" (click)="city='Delhi'; onSearch()">
+				<p class="stay-tag">Urban</p>
+				<h3>Business City Hotels</h3>
+				<p>Connected locations near airports and financial districts.</p>
+			</article>
+			<article class="stay-card" (click)="city='Manali'; onSearch()">
+				<p class="stay-tag">Nature</p>
+				<h3>Hillside Getaways</h3>
+				<p>Cozy stays with mountain views and fresh climate.</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="trust-strip" *ngIf="!auth.isAdmin()">
+		<div class="trust-item">
+			<h4>Free Cancellation Options</h4>
+			<p>Flexible policies on selected rooms for worry-free planning.</p>
+		</div>
+		<div class="trust-item">
+			<h4>Real-time Availability</h4>
+			<p>Room availability updates instantly while you search and book.</p>
+		</div>
+		<div class="trust-item">
+			<h4>Secure Booking Journey</h4>
+			<p>End-to-end protected reservation flow with booking reference tracking.</p>
+		</div>
+	</section>
+</main>

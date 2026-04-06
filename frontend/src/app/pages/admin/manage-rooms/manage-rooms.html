@@ -1,0 +1,97 @@
+<main class="rooms-page">
+	<section class="rooms-wrap">
+		<header class="page-head">
+			<div>
+				<p class="eyebrow">Admin Panel</p>
+				<h1>Manage Rooms</h1>
+				<p class="subtitle">Add and maintain hotel rooms across all properties.</p>
+			</div>
+		</header>
+
+		<section class="editor-card">
+			<h2>Add New Room</h2>
+
+			<div class="form-grid">
+				<div class="field">
+					<label for="hotel">Hotel</label>
+					<select id="hotel" [(ngModel)]="form.hotelId">
+						<option [ngValue]="0">Select hotel</option>
+						<option *ngFor="let h of hotels()" [ngValue]="h.id">{{ h.name }} ({{ h.city }})</option>
+					</select>
+				</div>
+
+				<div class="field">
+					<label for="roomType">Room Type</label>
+					<input id="roomType" type="text" [(ngModel)]="form.roomType" placeholder="Deluxe / Suite / Standard" />
+				</div>
+
+				<div class="field">
+					<label for="price">Price Per Night</label>
+					<input id="price" type="number" min="0" [(ngModel)]="form.pricePerNight" />
+				</div>
+
+				<div class="field">
+					<label for="capacity">Capacity</label>
+					<input id="capacity" type="number" min="1" [(ngModel)]="form.capacity" />
+				</div>
+
+				<div class="field checkbox-field">
+					<label>
+						<input type="checkbox" [(ngModel)]="form.isAvailable" />
+						Available
+					</label>
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="button" class="primary-btn" [disabled]="saving()" (click)="addRoom()">
+					{{ saving() ? 'Saving...' : 'Add Room' }}
+				</button>
+			</div>
+		</section>
+
+		<section class="list-card">
+			<div class="list-head">
+				<h2>Rooms List</h2>
+				<div class="filter-wrap">
+					<label for="filterHotel">Filter by Hotel</label>
+					<select id="filterHotel" [ngModel]="filterHotel()" (ngModelChange)="filterHotel.set($event); loadRooms()">
+						<option [ngValue]="0">All hotels</option>
+						<option *ngFor="let h of hotels()" [ngValue]="h.id">{{ h.name }}</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="state" *ngIf="loading()">
+				<div class="loader"></div>
+				<p>Loading rooms...</p>
+			</div>
+
+			<div class="state" *ngIf="!loading() && rooms().length === 0">
+				<p>No rooms found for this selection.</p>
+			</div>
+
+			<div class="room-grid" *ngIf="!loading() && rooms().length > 0">
+				<article class="room-card" *ngFor="let r of rooms()">
+					<div class="card-top">
+						<h3>{{ r.roomType }}</h3>
+						<span class="status-pill" [attr.data-status]="r.isAvailable ? 'Available' : 'Unavailable'">
+							{{ r.isAvailable ? 'Available' : 'Unavailable' }}
+						</span>
+					</div>
+
+					<div class="meta-grid">
+						<p><span>Hotel</span><strong>{{ r.hotelName }}</strong></p>
+						<p><span>Price</span><strong>₹{{ r.pricePerNight | number }}</strong></p>
+						<p><span>Capacity</span><strong>{{ r.capacity }} guest(s)</strong></p>
+						<p><span>Room ID</span><strong>#{{ r.id }}</strong></p>
+					</div>
+
+					<div class="card-actions">
+						<button type="button" class="delete-btn" (click)="deleteRoom(r.id)">Delete Room</button>
+					</div>
+				</article>
+			</div>
+		</section>
+	</section>
+</main>

@@ -29,7 +29,7 @@ namespace StaySimple.AuthService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 
@@ -43,7 +43,7 @@ namespace StaySimple.AuthService.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }

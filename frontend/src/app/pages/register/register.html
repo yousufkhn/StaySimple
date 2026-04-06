@@ -1,0 +1,87 @@
+<main class="register-page">
+  <section class="register-card">
+    <h1>Create Account</h1>
+    <p class="subtitle">Join us to book your stay.</p>
+
+    <form (ngSubmit)="onSubmit()" novalidate>
+      <label for="name">Full Name</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        [(ngModel)]="name"
+        placeholder="John Doe"
+        [disabled]="loading"
+        required
+      />
+      @if (touched && !name) {
+        <small class="field-error">Name is required.</small>
+      }
+
+      <label for="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        placeholder="you@example.com"
+        [disabled]="loading"
+        required
+      />
+      @if (touched && !email) {
+        <small class="field-error">Email is required.</small>
+      }
+
+      <label for="password">Password</label>
+      <div class="password-wrap">
+        <input
+          id="password"
+          name="password"
+          [type]="show ? 'text' : 'password'"
+          [(ngModel)]="password"
+          placeholder="Min 8 characters"
+          [disabled]="loading"
+          required
+        />
+        <button type="button" class="toggle-btn" (click)="show = !show" [disabled]="loading">
+          {{ show ? 'Hide' : 'Show' }}
+        </button>
+      </div>
+      @if (touched && !password) {
+        <small class="field-error">Password is required.</small>
+      }
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        [type]="show ? 'text' : 'password'"
+        [(ngModel)]="confirmPassword"
+        placeholder="Confirm password"
+        [disabled]="loading"
+        required
+      />
+      @if (touched && !confirmPassword) {
+        <small class="field-error">Please confirm password.</small>
+      }
+      @if (touched && password && confirmPassword && password !== confirmPassword) {
+        <small class="field-error">Passwords do not match.</small>
+      }
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+      @if (success) {
+        <p class="success">{{ success }}</p>
+      }
+
+      <button class="submit-btn" type="submit" [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <p class="login-link">
+      Already have an account? <a routerLink="/login">Sign In</a>
+    </p>
+  </section>
+</main>

@@ -1,0 +1,53 @@
+<main class="login-page">
+	<section class="login-card">
+		<h1>Login</h1>
+		<p class="subtitle">Welcome back. Please sign in.</p>
+
+		<form (ngSubmit)="onSubmit()" novalidate>
+			<label for="email">Email</label>
+			<input
+				id="email"
+				name="email"
+				type="email"
+				[(ngModel)]="email"
+				placeholder="you@example.com"
+				[disabled]="loading"
+				required
+			/>
+			@if (touched && !email) {
+				<small class="field-error">Email is required.</small>
+			}
+
+			<label for="password">Password</label>
+			<div class="password-wrap">
+				<input
+					id="password"
+					name="password"
+					[type]="show ? 'text' : 'password'"
+					[(ngModel)]="password"
+					placeholder="Enter password"
+					[disabled]="loading"
+					required
+				/>
+				<button type="button" class="toggle-btn" (click)="show = !show" [disabled]="loading">
+					{{ show ? 'Hide' : 'Show' }}
+				</button>
+			</div>
+			@if (touched && !password) {
+				<small class="field-error">Password is required.</small>
+			}
+
+			@if (error) {
+				<p class="error">{{ error }}</p>
+			}
+
+			<button class="submit-btn" type="submit" [disabled]="loading">
+				{{ loading ? 'Signing in...' : 'Sign In' }}
+			</button>
+		</form>
+
+    <p class="register-link">
+      Don't have an account? <a routerLink="/register">Sign Up</a>
+    </p>
+	</section>
+</main>

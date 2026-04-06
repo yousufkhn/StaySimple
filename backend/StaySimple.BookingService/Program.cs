@@ -6,6 +6,7 @@ using StaySimple.BookingService.Data;
 using StaySimple.BookingService.Services.Implementations;
 using StaySimple.BookingService.Services.Interfaces;
 using System.Text;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BookingDbContext>(o =>
 {
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// for rabbit mq
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(builder.Configuration["RabbitMQ:Host"], h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"]!);
+            h.Password(builder.Configuration["RabbitMQ:Password"]!);
+        });
+        cfg.ConfigureEndpoints(ctx);
+    });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -81,8 +96,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 
 app.UseAuthentication();

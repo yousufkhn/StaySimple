@@ -1,0 +1,116 @@
+.topbar {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 1.5rem;
+	background: rgba(26, 31, 46, 0.92);
+	border-bottom: 1px solid var(--border);
+	backdrop-filter: blur(12px);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.brand {
+	font-size: 1.2rem;
+	font-weight: 800;
+	background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	text-decoration: none;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.menu {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.menu a {
+	text-decoration: none;
+	color: var(--text-muted);
+	padding: 0.5rem 0.85rem;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	transition: all 0.3s ease;
+}
+
+.menu a:hover {
+	background: rgba(74, 112, 255, 0.15);
+	color: var(--primary-light);
+}
+
+.menu a.active {
+	background: linear-gradient(135deg, rgba(74, 112, 255, 0.25) 0%, rgba(124, 92, 222, 0.15) 100%);
+	color: var(--primary-light);
+	border: 1px solid rgba(74, 112, 255, 0.3);
+	box-shadow: 0 4px 12px rgba(74, 112, 255, 0.15);
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+}
+
+.role-pill {
+	border: 1px solid rgba(124, 92, 222, 0.4);
+	background: rgba(124, 92, 222, 0.15);
+	color: var(--accent-light);
+	border-radius: 999px;
+	padding: 0.35rem 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.role-pill.admin {
+	background: rgba(212, 175, 55, 0.15);
+	border-color: rgba(212, 175, 55, 0.4);
+	color: var(--luxury-gold);
+}
+
+.btn.ghost {
+	border: 1.5px solid var(--primary);
+	background: transparent;
+	color: var(--primary-light);
+	border-radius: 8px;
+	padding: 0.5rem 1rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.btn.ghost:hover {
+	background: rgba(74, 112, 255, 0.15);
+	border-color: var(--primary-light);
+	box-shadow: 0 4px 12px rgba(74, 112, 255, 0.2);
+}
+
+.page-shell {
+	min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 780px) {
+	.topbar {
+		flex-wrap: wrap;
+		padding: 0.8rem 0.85rem;
+	}
+
+	.menu {
+		width: 100%;
+		order: 3;
+	}
+
+	.actions {
+		margin-left: auto;
+	}
+}

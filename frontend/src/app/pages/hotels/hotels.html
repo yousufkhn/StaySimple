@@ -1,0 +1,107 @@
+<main class="hotels-page">
+	<section class="hotels-wrap">
+		<div class="journey-head">
+			<p class="eyebrow">Stay Journey</p>
+			<h1>Choose your stay, then lock your room in minutes.</h1>
+			<p class="subtitle">Discover trusted properties, compare room options, and continue to secure booking.</p>
+		</div>
+
+		<div class="flow-strip">
+			<div class="flow-step active">
+				<span>1</span>
+				<p>Select Hotel</p>
+			</div>
+			<div class="flow-step">
+				<span>2</span>
+				<p>Choose Room</p>
+			</div>
+			<div class="flow-step">
+				<span>3</span>
+				<p>Confirm Booking</p>
+			</div>
+		</div>
+
+		<div class="search-bar">
+			<input
+				type="text"
+				placeholder="Search by city (Mumbai, Goa, Jaipur...)"
+				[(ngModel)]="searchCity"
+				(keyup.enter)="search()"
+			/>
+			<button type="button" class="btn primary" (click)="search()">Search</button>
+			@if (searchCity()) {
+				<button type="button" class="btn ghost" (click)="clearSearch()">Clear</button>
+			}
+			<select [(ngModel)]="sortBy" (change)="sort()">
+				<option value="">Sort by</option>
+				<option value="rating">Highest Rated</option>
+				<option value="name">Name A-Z</option>
+			</select>
+		</div>
+
+		<div class="city-chips">
+			@for (city of cities; track city) {
+				<button
+					type="button"
+					class="chip"
+					[class.active]="searchCity()=== city"
+					(click)="searchCity.set(city); search()"
+				>
+					{{ city }}
+				</button>
+			}
+		</div>
+
+		@if (!loading() && !error()) {
+			<p class="count">{{ hotels().length }} hotel(s) found</p>
+		}
+
+		@if (loading()) {
+			<p class="state">Loading hotels, please wait...</p>
+		} @else if (error()) {
+			<p class="state error">{{ error() }}</p>
+		} @else if (hotels().length === 0) {
+			<p class="state">No hotels found.</p>
+		} @else {
+			<div class="hotel-list">
+				@for (hotel of hotels(); track hotel.id) {
+					<article class="hotel-card">
+						@if (hotel.imageUrl) {
+							<img
+								[src]="hotel.imageUrl"
+								[alt]="hotel.name"
+								class="hotel-image"
+								(error)="$any($event.target).src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'"
+							/>
+						} @else {
+							<img
+								src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"
+								alt="Hotel image"
+								class="hotel-image"
+							/>
+						}
+
+						<div class="hotel-content">
+							<p class="card-kicker">{{ hotel.city }}</p>
+							<h2>{{ hotel.name }}</h2>
+							<p class="meta">{{ hotel.city }} | {{ hotel.address }}</p>
+							<div class="rating-row">
+								<span class="stars">
+									@for (_ of stars(hotel.rating); track $index) {
+										<span>*</span>
+									}
+								</span>
+								<span class="badge">{{ hotel.rating }}</span>
+							</div>
+							<p>{{ hotel.description || 'No description available.' }}</p>
+							<div class="card-footer">
+								<p class="meta-note">Flexible booking support</p>
+								<a [routerLink]="['/hotels', hotel.id]" class="btn primary action">View Rooms</a>
+							</div>
+						</div>
+					</article>
+				}
+			</div>
+		}
+	</section>
+</main>

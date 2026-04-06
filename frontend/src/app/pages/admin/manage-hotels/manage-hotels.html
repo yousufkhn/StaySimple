@@ -1,0 +1,93 @@
+<main class="manage-page">
+	<section class="manage-wrap">
+		<header class="page-head">
+			<div>
+				<p class="eyebrow">Admin Panel</p>
+				<h1>Manage Hotels</h1>
+				<p class="subtitle">Create, update, and delete hotel records from a single dashboard.</p>
+			</div>
+		</header>
+
+		<section class="editor-card">
+			<h2>{{ editing() ? 'Edit Hotel' : 'Add New Hotel' }}</h2>
+
+			<div class="form-grid">
+				<div class="field">
+					<label for="name">Hotel Name</label>
+					<input id="name" type="text" [(ngModel)]="form.name" placeholder="e.g. The Grand Marina" />
+				</div>
+
+				<div class="field">
+					<label for="city">City</label>
+					<input id="city" type="text" [(ngModel)]="form.city" placeholder="e.g. Mumbai" />
+				</div>
+
+				<div class="field full">
+					<label for="address">Address</label>
+					<input id="address" type="text" [(ngModel)]="form.address" placeholder="Street, area, pin" />
+				</div>
+
+				<div class="field full">
+					<label for="description">Description</label>
+					<textarea id="description" rows="3" [(ngModel)]="form.description" placeholder="Hotel overview and highlights"></textarea>
+				</div>
+
+				<div class="field">
+					<label for="rating">Rating (0 to 5)</label>
+					<input id="rating" type="number" min="0" max="5" step="0.1" [(ngModel)]="form.rating" />
+				</div>
+
+				<div class="field">
+					<label for="imageUrl">Image URL</label>
+					<input id="imageUrl" type="text" [(ngModel)]="form.imageUrl" placeholder="https://..." />
+				</div>
+			</div>
+
+			<div class="form-actions">
+				<button type="button" class="primary-btn" [disabled]="saving()" (click)="save()">
+					{{ saving() ? 'Saving...' : (editing() ? 'Update Hotel' : 'Create Hotel') }}
+				</button>
+				<button type="button" class="ghost-btn" *ngIf="editing()" [disabled]="saving()" (click)="cancelEdit()">
+					Cancel Edit
+				</button>
+			</div>
+		</section>
+
+		<section class="list-card">
+			<div class="list-head">
+				<h2>Existing Hotels</h2>
+				<span class="count">{{ hotels().length }} total</span>
+			</div>
+
+			<div class="state" *ngIf="loading()">
+				<div class="loader"></div>
+				<p>Loading hotels...</p>
+			</div>
+
+			<div class="state" *ngIf="!loading() && hotels().length === 0">
+				<p>No hotels yet. Add your first hotel above.</p>
+			</div>
+
+			<div class="hotel-grid" *ngIf="!loading() && hotels().length > 0">
+				<article class="hotel-card" *ngFor="let h of hotels()">
+					<div class="thumb-wrap">
+						<img *ngIf="h.imageUrl" [src]="h.imageUrl" [alt]="h.name" />
+						<div *ngIf="!h.imageUrl" class="no-image">No Image</div>
+					</div>
+
+					<div class="hotel-body">
+						<h3>{{ h.name }}</h3>
+						<p class="meta">{{ h.city }} • {{ h.address }}</p>
+						<p class="desc">{{ h.description }}</p>
+						<p class="rating">Rating: <strong>{{ h.rating }}</strong></p>
+
+						<div class="actions">
+							<button type="button" class="edit-btn" (click)="edit(h)">Edit</button>
+							<button type="button" class="delete-btn" (click)="delete(h.id)">Delete</button>
+						</div>
+					</div>
+				</article>
+			</div>
+		</section>
+	</section>
+</main>

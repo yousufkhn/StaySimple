@@ -1,0 +1,86 @@
+<main class="admin-bookings-page">
+	<section class="admin-bookings-wrap">
+		<header class="page-head">
+			<div>
+				<p class="eyebrow">Admin Panel</p>
+				<h1>View Bookings</h1>
+				<p class="subtitle">Monitor all bookings, filter by status, and cancel bookings when needed.</p>
+			</div>
+			<button type="button" class="refresh-btn" (click)="load()">Refresh</button>
+		</header>
+
+		<section class="stats-grid" *ngIf="!loading()">
+			<article class="stat-card" *ngFor="let s of stats">
+				<p>{{ s.label }}</p>
+				<h3>{{ s.value }}</h3>
+			</article>
+		</section>
+
+		<section class="toolbar" *ngIf="!loading()">
+			<div class="search-wrap">
+				<input
+					type="text"
+					placeholder="Search by hotel or user"
+					[value]="search()"
+					(input)="search.set($any($event.target).value)"
+				/>
+			</div>
+
+			<div class="filters">
+				<button
+					type="button"
+					*ngFor="let f of filters()"
+					(click)="activeFilter.set(f)"
+					[class.active]="activeFilter() === f"
+				>
+					{{ f }}
+				</button>
+			</div>
+		</section>
+
+		<div class="state-box" *ngIf="loading()">
+			<div class="loader"></div>
+			<p>Loading bookings...</p>
+		</div>
+
+		<div class="state-box" *ngIf="!loading() && filtered.length === 0">
+			<h2>No bookings found</h2>
+			<p>Try a different filter or search term.</p>
+		</div>
+
+		<section class="booking-grid" *ngIf="!loading() && filtered.length > 0">
+			<article class="booking-card" *ngFor="let b of filtered">
+				<div class="card-top">
+					<div>
+						<p class="ref">{{ b.bookingRef }}</p>
+						<h2>{{ b.hotelName }}</h2>
+						<p class="meta">{{ b.roomType }} · Room #{{ b.roomId }}</p>
+					</div>
+					<span class="status-pill" [attr.data-status]="b.status">{{ b.status }}</span>
+				</div>
+
+				<div class="details-grid">
+					<p><span>User</span><strong>{{ b.userName }}</strong></p>
+					<p><span>Check-in</span><strong>{{ b.checkInDate | date:'mediumDate' }}</strong></p>
+					<p><span>Check-out</span><strong>{{ b.checkOutDate | date:'mediumDate' }}</strong></p>
+					<p><span>Total</span><strong>₹{{ b.totalPrice | number }}</strong></p>
+					<p><span>Created</span><strong>{{ b.createdAt | date:'medium' }}</strong></p>
+				</div>
+
+				<div class="card-actions">
+					<button
+						type="button"
+						class="danger-btn"
+						*ngIf="b.status === 'Confirmed'"
+						[disabled]="cancelId() === b.id"
+						(click)="cancel(b.id)"
+					>
+						<span *ngIf="cancelId() !== b.id">Cancel Booking</span>
+						<span *ngIf="cancelId() === b.id">Cancelling...</span>
+					</button>
+					<span class="muted" *ngIf="b.status !== 'Confirmed'">Already cancelled</span>
+				</div>
+			</article>
+		</section>
+	</section>
+</main>

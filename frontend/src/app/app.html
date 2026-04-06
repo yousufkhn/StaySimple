@@ -1,0 +1,24 @@
+<header class="topbar">
+	<a class="brand" routerLink="/">StaySimple</a>
+
+	<nav class="menu">
+		<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+		<a *ngIf="auth.isLoggedIn() && !auth.isAdmin()" routerLink="/hotels" routerLinkActive="active">Hotels</a>
+		<a *ngIf="auth.isLoggedIn() && !auth.isAdmin()" routerLink="/my-bookings" routerLinkActive="active">My Bookings</a>
+		<a *ngIf="auth.isLoggedIn() && auth.isAdmin()" routerLink="/admin/manage-hotels" routerLinkActive="active">Manage Hotels</a>
+		<a *ngIf="auth.isLoggedIn() && auth.isAdmin()" routerLink="/admin/manage-rooms" routerLinkActive="active">Manage Rooms</a>
+		<a *ngIf="!auth.isLoggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
+		<a *ngIf="!auth.isLoggedIn()" routerLink="/register" routerLinkActive="active">Register</a>
+	</nav>
+
+	<div class="actions">
+		<span *ngIf="auth.isLoggedIn()" class="role-pill" [class.admin]="auth.isAdmin()">
+			{{ auth.isAdmin() ? 'Admin' : 'User' }}
+		</span>
+		<button *ngIf="auth.isLoggedIn()" type="button" class="btn ghost" (click)="logout()">Logout</button>
+	</div>
+</header>
+
+<main class="page-shell">
+	<router-outlet />
+</main>

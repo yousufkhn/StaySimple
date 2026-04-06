@@ -1,0 +1,132 @@
+<main class="detail-page">
+	<section class="detail-wrap">
+		<a routerLink="/hotels" class="back-link">Back to Hotels</a>
+
+		@if (loading()) {
+			<div class="state-card">
+				<p>Loading hotel details...</p>
+			</div>
+		} @else if (!hotel()) {
+			<div class="state-card error">
+				<p>Hotel not found.</p>
+			</div>
+		} @else {
+			<div class="flow-strip">
+				<div class="flow-step done">
+					<span>1</span>
+					<p>Hotel selected</p>
+				</div>
+				<div class="flow-step" [class.done]="selected()">
+					<span>2</span>
+					<p>Room selected</p>
+				</div>
+				<div class="flow-step" [class.done]="nights > 0">
+					<span>3</span>
+					<p>Dates and total</p>
+				</div>
+			</div>
+
+			<article class="hotel-hero">
+				<div class="hero-image-wrap">
+					@if (hotel()?.imageUrl) {
+						<img
+							[src]="hotel()?.imageUrl"
+							[alt]="hotel()?.name || 'Hotel image'"
+							class="hero-image"
+							(error)="$any($event.target).src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200'"
+						/>
+					} @else {
+						<div class="hero-placeholder">No Image</div>
+					}
+				</div>
+				<div class="hero-content">
+					<h1>{{ hotel()?.name }}</h1>
+					<p class="meta">{{ hotel()?.city }} | {{ hotel()?.address }}</p>
+					<p class="description">{{ hotel()?.description }}</p>
+					<p class="rating">Rating: <span>{{ hotel()?.rating }}</span></p>
+				</div>
+			</article>
+
+			<div class="booking-layout">
+				<section class="rooms-section">
+					<h2>Choose Your Room</h2>
+
+					@if (roomsLoading()) {
+						<div class="state-card">
+							<p>Loading rooms...</p>
+						</div>
+					} @else if (rooms().length === 0) {
+						<div class="state-card">
+							<p>No rooms available.</p>
+						</div>
+					} @else {
+						<div class="room-grid">
+							@for (room of rooms(); track room.id) {
+								<article class="room-card" [class.selected]="selected()?.id === room.id">
+									<div class="room-top">
+										<h3>{{ room.roomType }}</h3>
+										<span class="price">Rs {{ room.pricePerNight }} / night</span>
+									</div>
+									<p>Capacity: {{ room.capacity }} guest(s)</p>
+									<p>
+										Status:
+										<span [class.available]="room.isAvailable" [class.unavailable]="!room.isAvailable">
+											{{ room.isAvailable ? 'Available' : 'Unavailable' }}
+										</span>
+									</p>
+									<button type="button" class="select-btn" (click)="select(room)" [disabled]="!room.isAvailable">
+										{{ selected()?.id === room.id ? 'Selected' : 'Select Room' }}
+									</button>
+								</article>
+							}
+						</div>
+					}
+				</section>
+
+				@if (!auth.isAdmin()) {
+					<aside class="booking-panel sticky">
+						<h2>Booking Summary</h2>
+						<p class="selected-room">
+							@if (selected()) {
+								Room: {{ selected()?.roomType }}
+							} @else {
+								Select a room to continue.
+							}
+						</p>
+
+						<div class="date-grid">
+							<div class="field">
+								<label for="checkIn">Check-in</label>
+								<input id="checkIn" type="date" [min]="today" [ngModel]="checkIn()" (ngModelChange)="checkIn.set($event)" [disabled]="!selected()" />
+							</div>
+
+							<div class="field">
+								<label for="checkOut">Check-out</label>
+								<input id="checkOut" type="date" [min]="checkIn() || today" [ngModel]="checkOut()" (ngModelChange)="checkOut.set($event)" [disabled]="!selected()" />
+							</div>
+						</div>
+
+						<div class="totals">
+							<p>Nights: <strong>{{ nights }}</strong></p>
+							<p>Total: <strong>Rs {{ total }}</strong></p>
+						</div>
+
+						@if (bookingError()) {
+							<p class="error-text">{{ bookingError() }}</p>
+						}
+
+						<button type="button" class="book-btn" (click)="book()" [disabled]="bookingLoading() || nights <= 0 || !selected()">
+							{{ bookingLoading() ? 'Booking...' : 'Confirm Booking' }}
+						</button>
+					</aside>
+				} @else {
+					<section class="booking-panel">
+						<h2>Admin View</h2>
+						<p class="selected-room">Room selection is visible for review.</p>
+						<p class="error-text">Admin account is limited to managing hotels and rooms. Booking is disabled.</p>
+					</section>
+				}
+			</div>
+		}
+	</section>
+</main>

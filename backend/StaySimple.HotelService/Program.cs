@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using StaySimple.HotelService.Data;
 using StaySimple.HotelService.Services.Implementations;
 using StaySimple.HotelService.Services.Interfaces;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +22,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        NameClaimType = ClaimTypes.Name,
+        RoleClaimType = ClaimTypes.Role
     });
 
 builder.Services.AddAuthorization();
@@ -79,8 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+// Behind Ocelot, downstream calls arrive over HTTP (localhost:5030).
+// Redirecting to HTTPS causes route/auth issues for proxied requests.
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,0 +1,75 @@
+<main class="bookings-page">
+  <section class="bookings-wrap">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>My Bookings</h1>
+        <p class="subtitle">Track upcoming stays, cancellations, and your spending in one clean view.</p>
+      </div>
+      <a routerLink="/hotels" class="action-link">Book New Stay</a>
+    </header>
+
+    <section class="stats-grid" *ngIf="!loading()">
+      <article class="stat-card">
+        <p>Total Bookings</p>
+        <h3>{{ bookings().length }}</h3>
+      </article>
+      <article class="stat-card">
+        <p>Confirmed</p>
+        <h3>{{ confirmedCount }}</h3>
+      </article>
+      <article class="stat-card">
+        <p>Cancelled</p>
+        <h3>{{ cancelledCount }}</h3>
+      </article>
+      <article class="stat-card">
+        <p>Total Spent</p>
+        <h3>&#8377;{{ totalSpent | number }}</h3>
+      </article>
+    </section>
+
+    <div *ngIf="loading()" class="state-box">
+      <div class="loader"></div>
+      <p>Loading your bookings...</p>
+    </div>
+
+    <div *ngIf="!loading() && bookings().length === 0" class="state-box empty">
+      <h2>No bookings yet</h2>
+      <p>Your next trip starts with your first booking.</p>
+      <a routerLink="/hotels" class="action-link">Explore Hotels</a>
+    </div>
+
+    <section *ngIf="!loading() && bookings().length > 0" class="booking-grid">
+      <article *ngFor="let b of bookings()" class="booking-card">
+        <div class="card-top">
+          <div>
+            <p class="ref">{{ b.bookingRef }}</p>
+            <h2>{{ b.hotelName }}</h2>
+            <p class="room">{{ b.roomType }}</p>
+          </div>
+          <span class="status-pill" [attr.data-status]="b.status">{{ b.status }}</span>
+        </div>
+
+        <div class="card-meta">
+          <p><span>Check-in</span><strong>{{ b.checkInDate | date:'mediumDate' }}</strong></p>
+          <p><span>Check-out</span><strong>{{ b.checkOutDate | date:'mediumDate' }}</strong></p>
+          <p><span>Total</span><strong>&#8377;{{ b.totalPrice | number }}</strong></p>
+          <p>
+            <span>Countdown</span>
+            <strong *ngIf="b.status==='Confirmed' && daysUntil(b.checkInDate) > 0">{{ daysUntil(b.checkInDate) }} day(s)</strong>
+            <strong *ngIf="b.status==='Confirmed' && daysUntil(b.checkInDate) === 0">Today</strong>
+            <strong *ngIf="b.status!=='Confirmed'">—</strong>
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <button *ngIf="b.status==='Confirmed'" type="button" class="danger-btn" (click)="cancel(b.id)" [disabled]="cancelId()===b.id">
+            <span *ngIf="cancelId()!==b.id">Cancel Booking</span>
+            <span *ngIf="cancelId()===b.id">Cancelling...</span>
+          </button>
+          <span *ngIf="b.status!=='Confirmed'" class="muted">This booking is already cancelled.</span>
+        </div>
+      </article>
+    </section>
+  </section>
+</main>

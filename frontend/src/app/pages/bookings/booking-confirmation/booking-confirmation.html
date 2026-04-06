@@ -1,0 +1,54 @@
+<main class="confirm-page">
+	<section class="confirm-shell">
+		<article class="confirm-card">
+			<div class="success-badge" aria-hidden="true">Check</div>
+			<p class="eyebrow">Reservation Complete</p>
+			<h1>Booking Confirmed</h1>
+			<p class="subtitle">
+				Your stay has been reserved successfully. Confirmation details are saved and ready in your booking history.
+			</p>
+
+			<section class="summary-card" aria-label="Booking summary">
+				<div class="summary-row">
+					<span>Booking Ref</span>
+					<strong>{{ state.bookingRef || 'STY-2026-XXXXXX' }}</strong>
+				</div>
+				<div class="summary-row">
+					<span>Hotel</span>
+					<strong>{{ state.hotelName || 'StaySimple Hotel' }}</strong>
+				</div>
+				<div class="summary-row">
+					<span>Room</span>
+					<strong>{{ state.roomType || 'Standard Room' }}</strong>
+				</div>
+				<div class="summary-row">
+					<span>Check-in</span>
+					<strong>{{ state.checkIn | date:'mediumDate' }}</strong>
+				</div>
+				<div class="summary-row">
+					<span>Check-out</span>
+					<strong>{{ state.checkOut | date:'mediumDate' }}</strong>
+				</div>
+				<div class="summary-row">
+					<span>Nights</span>
+					<strong>{{ state.nights || 0 }}</strong>
+				</div>
+				<div class="summary-row total-row">
+					<span>Total Paid</span>
+					<strong>Rs {{ state.total || 0 }}</strong>
+				</div>
+			</section>
+
+			<div class="event-note">
+				<p>
+					<strong>Queue status:</strong> BookingConfirmedEvent is published to RabbitMQ and processed by Notification service.
+				</p>
+			</div>
+
+			<div class="actions">
+				<a routerLink="/my-bookings" class="btn solid">View My Bookings</a>
+				<a routerLink="/hotels" class="btn outline">Book Another Stay</a>
+			</div>
+		</article>
+	</section>
+</main>
